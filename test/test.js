@@ -2,11 +2,15 @@
 //let DeviceMotion = require("../src/index.js");
 import DeviceMotion from '../src/index';
 console.log('open', document.getElementById('start'));
-let dm = new DeviceMotion(callback);
+let dm = new DeviceMotion(false, callback);
 
 document.getElementById('start').onclick = () =>{
     alert('click!');
     dm.requestPermission();
+};
+
+document.getElementById('filter').onclick = () =>{
+    dm.setFilter(document.getElementById('filter').checked);
 };
 
 function callback(evt) {
@@ -21,7 +25,7 @@ function toString(jsonData) {
     let html = "";
     for (let k in jsonData) {
         if (!k) continue;
-        html += `${k}: ${jsonData[k].toFixed(3)} </br>`
+        html += `${k}: ${jsonData[k]>0?"+":""}${jsonData[k].toFixed(3)} </br>`
     }
     return html;
 }

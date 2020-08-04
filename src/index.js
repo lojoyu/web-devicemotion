@@ -2,8 +2,9 @@ import "@babel/polyfill";
 import OneEuroFilter from './oneEuroFilter';
 
 export default class DeviceMotion {
-    constructor(listenerFunc = null) {
+    constructor(usingFilter = false, listenerFunc = null) {
         this.granted = false;
+        this.usingFilter = usingFilter;
         this.orient = {
             pitch : 0,
             raw : 0,
@@ -15,6 +16,12 @@ export default class DeviceMotion {
             yaw : 0
         }
         this.orientAcc = {
+            pitch : 0,
+            raw : 0,
+            yaw : 0
+        }
+
+        this.filterV = {
             pitch : 0,
             raw : 0,
             yaw : 0
@@ -67,9 +74,9 @@ export default class DeviceMotion {
 
     initAcc() {
         this.motion = {
-            pitch: new Motion(),
-            roll: new Motion(),
-            yaw: new Motion()
+            pitch: new Motion(this.usingFilter),
+            roll: new Motion(this.usingFilter),
+            yaw: new Motion(this.usingFilter)
         }
     }
 
@@ -78,10 +85,16 @@ export default class DeviceMotion {
         this.motion.roll.calculate(event.gamma);
         this.motion.yaw.calculate(event.alpha);
 
+        // this.orient = {
+        //     pitch: event.beta,
+        //     roll: event.gamma,
+        //     yaw: event.alpha,
+        // }
+
         this.orient = {
-            pitch: event.beta,
-            roll: event.gamma,
-            yaw: event.alpha,
+            pitch: this.motion.pitch.p,
+            roll: this.motion.roll.p,
+            yaw: this.motion.yaw.p,
         }
 
         this.orientVel = {
@@ -95,8 +108,21 @@ export default class DeviceMotion {
             roll: this.motion.roll.a,
             yaw: this.motion.yaw.a,
         }
+
+        // this.filterV = {
+        //     pitch: this.motion.pitch.filterVal,
+        //     roll: this.motion.roll.filterVal,
+        //     yaw: this.motion.yaw.filterVal, 
+        // }
     
         if (this.listenerFunc) this.listenerFunc(event);
+    }
+
+    setFilter(use) {
+        this.usingFilter = use;
+        this.motion.pitch.usingFilter = use;
+        this.motion.roll.usingFilter = use;
+        this.motion.yaw.usingFilter = use;
     }
 
 }
@@ -110,20 +136,28 @@ class Motion {
     lastV = 0;
     lastA = 0;
     lastTime = Date.now();
-    constructor() {
 
+    constructor(usingFilter = false) {
+        this.usingFilter = usingFilter;
+        this.oeFilter = new OneEuroFilter(0.5);
+        this.oeFilterV = new OneEuroFilter(0.5, 10, 1, 10);
     }
 
     calculate(value) {
         let now = Date.now();
         let timed = (now - this.lastTime) / 1000;
-        
+        if (this.usingFilter) {
+            value = this.oeFilter.filter(value, now/1000);
+        }
         this.lastP = this.p;
         this.lastV = this.v;
         this.lastA = this.a;
-        this.p = value ;
+        this.p = value;
 
         this.v = (this.p - this.lastP) / timed;
+        if (this.usingFilter) {
+            this.v = this.oeFilterV.filter(this.v, now/1000);
+        }
         this.a = (this.v - this.lastV) / timed;
 
         this.lastTime = now;

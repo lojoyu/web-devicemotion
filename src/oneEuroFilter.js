@@ -32,7 +32,7 @@ class LowPassFilter {
     
     setAlpha(alpha) {
       if (alpha<=0.0 || alpha>1.0) 
-        console.log("alpha should be in (0.0., 1.0]");
+        console.log(alpha, "alpha should be in (0.0., 1.0]");
       this.a = alpha;
     }
   
@@ -125,11 +125,13 @@ export default class OneEuroFilter {
         this.freq = 1.0 / (timestamp-this.lasttime) ;
       this.lasttime = timestamp ;
       // estimate the current variation per second 
+      //console.log('dvalue here');
       var dvalue = this.x.hasLastRawValue() ? (value - this.x.lastRawValue())*this.freq : 0.0 ; 
       var edvalue = this.dx.filterWithAlpha(dvalue, this.alpha(this.dcutoff)) ;
       // use it to update the cutoff frequency
       var cutoff = this.mincutoff + this.beta_ * Math.abs(edvalue) ;
       // filter the given value
+      //console.log(cutoff, 'cutoff here');
       return this.x.filterWithAlpha(value, this.alpha(cutoff)) ;
     }
   } 
