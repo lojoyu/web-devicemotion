@@ -1,6 +1,7 @@
-//let DeviceMotion = require("../dist/index.min.js");
+let DeviceMotion = require("../dist/index.min.js");
 //let DeviceMotion = require("../src/index.js");
-import DeviceMotion from '../src/index';
+//import DeviceMotion from '../src/index';
+//import DeviceMotion from '../dist/index.min.js';
 console.log('open', document.getElementById('start'));
 let dm = new DeviceMotion(false, callback);
 
@@ -13,7 +14,7 @@ document.getElementById('filter').onclick = () =>{
     dm.setFilter(document.getElementById('filter').checked);
 };
 
-function callback(evt) {
+function callback() {
     //console.log(JSON.parse(evt));
     //console.log(dm.orient);
     document.getElementById('orient').innerHTML = toString(dm.orient);

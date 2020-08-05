@@ -20,12 +20,6 @@ export default class DeviceMotion {
             raw : 0,
             yaw : 0
         }
-
-        this.filterV = {
-            pitch : 0,
-            raw : 0,
-            yaw : 0
-        }
         this.listenerFunc = listenerFunc;
     }
 
@@ -115,7 +109,7 @@ export default class DeviceMotion {
         //     yaw: this.motion.yaw.filterVal, 
         // }
     
-        if (this.listenerFunc) this.listenerFunc(event);
+        if (this.listenerFunc) this.listenerFunc();
     }
 
     setFilter(use) {

@@ -1,67 +1,52 @@
-# Recorder
+# Device Motion
 
-This is a recorder using Web Audio API.
+This is a device orientation / velocity listener.
 
 (Still in Development)
-
-Buffer Length is 1024, sample rate is using WebAudio default sample rate.
 
 ## How to use
 
 ### Import
 
 ```javascript
-import Recorder from 'recorder.min.js'
+import DeviceMotion from '@zonesoundcreative/web-devicemotion'
 ```
 
 ### Usage
 
-First, new an instance of Recorder with media streaming source.
+First, new an instance of Devicemotion with optional parameter.
 ```js
-let recorder = new Recorder(source)
+let deviceMotion = new DeviceMotion(smooth, listenerfunction);
 ```
-One example of getting streaming source:
-```js
-//init audio context
-let AudioContext = window.AudioContext|| window.webkitAudioContext;
-let context = new AudioContext();
+Parameter:
 
-var handleSuccess = function(stream) {
-    // get source (put your own stream)
-    let source = context.createMediaStreamSource(stream);
-    ...
-}
+* smooth: `BOOLEAN` Use one euro filter to smooth value or not.(default: false)
 
-//ask for recording permission
-navigator.mediaDevices.getUserMedia({ audio: true}).then(handleSuccess)
-```
+* listenerfunction: function be callback when device orientation has been read.
 
-**RECORD**
+**READ DATA**
+
+Access device motion data from deviceMotion instance. The datas are in JSON format.
 
 ```js
-//start a new record
-recorder.record()
+    //orientation
+    deviceMotion.orient = {
+        pitch : xxx,
+        raw : xxx,
+        yaw : xxx
+    }
 
-//or to resume your recording
-recorder.record(false);
-```
+    //velocity of orientation
+    deviceMotion.orientVel = {
+        pitch : xxx,
+        raw : xxx,
+        yaw : xxx
+    }
 
-**STOP**
-
-```js
-recorder.stop()
-```
-
-**PLAY**
-
-play the recorded buffer.
-```js
-recorder.play()
-```
-
-**GET BUFFER**
-
-get the recorded buffer.
-```js
-recorder.getBuffer()
+    //acceleration of orientation
+    deviceMotion.orientAcc = {
+        pitch : xxx,
+        raw : xxx,
+        yaw : xxx
+    }
 ```
