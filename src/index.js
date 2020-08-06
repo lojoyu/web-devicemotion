@@ -75,15 +75,10 @@ export default class DeviceMotion {
     }
 
     handleOrientation(event) {
-        this.motion.pitch.calculate(event.beta);
-        this.motion.roll.calculate(event.gamma);
+        this.motion.pitch.calculate(event.gamma);
+        this.motion.roll.calculate(event.beta);
         this.motion.yaw.calculate(event.alpha);
 
-        // this.orient = {
-        //     pitch: event.beta,
-        //     roll: event.gamma,
-        //     yaw: event.alpha,
-        // }
 
         this.orient = {
             pitch: this.motion.pitch.p,
