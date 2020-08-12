@@ -1,6 +1,6 @@
 {
   "name": "@zonesoundcreative/web-devicemotion",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "This is a device orientation / velocity listener.",
   "main": "dist/index.min.js",
   "scripts": {
